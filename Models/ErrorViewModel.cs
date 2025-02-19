@@ -1,4 +1,4 @@
-namespace Assignment2.Models
+namespace MVCSampleApp.Models
 {
     public class ErrorViewModel
     {
