@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MVCSampleApp.Models
+namespace Assignment2.Models
 {
     public class Person
     {

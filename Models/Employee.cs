@@ -1,6 +1,5 @@
-﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Blazor;
-
-namespace MVCSampleApp.Models
+﻿
+namespace Assignment2.Models
 {
     public class Employee : Person
     {

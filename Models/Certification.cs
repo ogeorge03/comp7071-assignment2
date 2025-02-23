@@ -1,4 +1,4 @@
-﻿namespace MVCSampleApp.Models
+﻿namespace Assignment2.Models
 {
     public class Certification
     {
