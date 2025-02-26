@@ -151,6 +151,7 @@ namespace Assignment2
         public DbSet<Rental_Invoice> Rental_Invoices { get; set; } = null!;
         public DbSet<Renter_Asset_Agreement> Renter_Asset_Agreements { get; set; } = null!;
         public DbSet<Shift_Schedule> Shift_Schedules { get; set; } = null!;
+        public DbSet<ShiftScheduleDetails> ShiftScheduleDetails { get; set; } = null!; // DTO for raw SQL queries
         public DbSet<StAddress> StAddresses { get; set; } = null!;
         public DbSet<Stat_Holidays> Stat_Holidays { get; set; } = null!;
 

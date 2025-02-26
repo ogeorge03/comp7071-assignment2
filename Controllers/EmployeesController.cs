@@ -35,7 +35,7 @@ namespace Assignment2.Controllers
                             ,stadd.Postal_Code as [PostalCode]
                             ,stadd.Country
                             ,(select Legal_Name from Org where Id = e.EmployerId) as [Employer]
-                            ,(select First_Name + Last_Name from Person where Id = e.Emergency_ContactId) as [EmergencyContact]
+                            ,(select First_Name + ' ' + Last_Name from Person where Id = e.Emergency_ContactId) as [EmergencyContact]
                             ,e.Job_Title as [JobTitle]
                             ,e.Employment_Start_Date as [EmploymentStartDate]
                             ,e.Employment_Termination_Date as [EmploymentTerminationDate]
@@ -68,7 +68,7 @@ namespace Assignment2.Controllers
                             ,stadd.Postal_Code as [PostalCode]
                             ,stadd.Country
                             ,(select Legal_Name from Org where Id = e.EmployerId) as [Employer]
-                            ,(select First_Name + Last_Name from Person where Id = e.Emergency_ContactId) as [EmergencyContact]
+                            ,(select First_Name + ' ' + Last_Name from Person where Id = e.Emergency_ContactId) as [EmergencyContact]
                             ,e.Job_Title as [JobTitle]
                             ,e.Employment_Start_Date as [EmploymentStartDate]
                             ,e.Employment_Termination_Date as [EmploymentTerminationDate]
@@ -85,6 +85,45 @@ namespace Assignment2.Controllers
             }
 
             return View(employee);
+        }
+
+        public async Task<IActionResult> Shifts(int? id) {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var shifts = await _context.ShiftScheduleDetails.FromSqlRaw(@"
+                        select 
+                        0 as id
+                        ,Start_Datetime
+                        ,Hours_Scheduled
+                        ,Hours_Completed
+                        ,Comments
+                        , (select First_Name + ' ' + Last_Name from Person where Id = SupervisorId) as [Supervisor]
+                        from Shift_Schedule
+                        where EmployeeId = {0}
+            ", id).AsNoTracking().ToListAsync();
+
+
+            return View(shifts);
+        }
+
+        public async Task<IActionResult> Payroll(int? id) {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var payroll = await _context.Payrolls.FromSqlRaw(@"
+                        select 
+                        *      
+                        from Payroll
+                        where EmployeeId = {0}
+            ", id).AsNoTracking().ToListAsync();
+
+
+            return View(payroll);
         }
 
         // GET: Employees/Create
