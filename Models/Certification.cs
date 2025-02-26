@@ -8,5 +8,6 @@
 
         public string? Certification_Number { get; set; }
 
+        public ICollection<Employee_Certification> Employee_Certifications { get; set; }
     }
 }

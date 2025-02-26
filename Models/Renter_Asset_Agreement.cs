@@ -10,6 +10,5 @@
         public enum RENTAL_TYPE { MONTHLY = 0, PREPAID = 1, ANNUAL = 2 }
         public DateTime? Agreement_Expiration_Date { get; set; }
         public string? Notes {  get; set; }
-
     }
 }

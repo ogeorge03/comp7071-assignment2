@@ -4,7 +4,7 @@
     {
 
         public int Id { get; set; }
-        public Employee Employee { get; set; }
+        public int EmployeeId { get; set; }
         public DateTime Vacation_Start_Date { get; set; }
         public DateTime Vacation_End_Date { get; set; }
         public bool Is_SuperVisor_Approved { get; set; }

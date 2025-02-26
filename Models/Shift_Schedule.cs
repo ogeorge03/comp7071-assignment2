@@ -1,9 +1,12 @@
-﻿namespace Assignment2.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Assignment2.Models
 {
     public class Shift_Schedule
     {
-        public Employee Employee { get; set; }
-        public Employee Supervisor { get; set; }
+        public int EmployeeId { get; set; }
+        [ForeignKey(nameof(Employee))]
+        public int SupervisorId { get; set; }
         public DateTime Start_Datetime { get; set; }
         public int Hours_Scheduled { get; set; }
         public int? Hours_Completed { get; set; }
