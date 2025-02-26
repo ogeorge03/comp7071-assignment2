@@ -139,6 +139,7 @@ namespace Assignment2
         public DbSet<Customer_Service> Customer_Services { get; set; } = null!;
         public DbSet<Customer_Service_Scheduled> Customer_Service_Scheduleds { get; set; } = null!;
         public DbSet<Employee> Employees { get; set; } = null!;
+        public DbSet<EmployeeDetails> EmployeesDetails { get; set; } // DTO for raw SQL queries
         public DbSet<Employee_Certification> Employee_Certifications { get; set; } = null!;
         public DbSet<Employee_Service_Assignment> Employee_Service_Assignments { get; set; } = null!;
         public DbSet<Employee_Sick_Leave> Employee_Sick_Leaves { get; set; } = null!;
