@@ -126,6 +126,27 @@ namespace Assignment2.Controllers
             return View(payroll);
         }
 
+        public async Task<IActionResult> WorkHistory(int? id) {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["statHolidays"] = await _context.Stat_Holidays.FromSqlRaw(@"
+                        select * from stat_holidays
+            ").AsNoTracking().ToListAsync();
+
+            ViewData["vacations"] = await _context.Employee_Vacations.FromSqlRaw(@"
+                        select * from Employee_Vacation where EmployeeId = {0}
+            ", id).AsNoTracking().ToListAsync();
+
+            ViewData["sickLeave"] = await _context.Employee_Sick_Leaves.FromSqlRaw(@"
+                        select * from Employee_Sick_Leave where EmployeeId = {0}
+            ", id).AsNoTracking().ToListAsync();
+
+            return View();
+        }
+
         // GET: Employees/Create
         public IActionResult Create()
         {
