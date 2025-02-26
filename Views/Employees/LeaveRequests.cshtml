@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "Leave Requests";
+}
+
+<h2>Request Leave</h2>
+
+<!-- Sick Leave Form -->
+<h3>Sick Leave Request</h3>
+<form id="sickLeaveForm">
+    <label for="sickDate">Sick Date:</label>
+    <input type="date" id="sickDate" required>
+
+    <label for="doctorsNote">Doctor's Note (Optional):</label>
+    <input type="text" id="doctorsNote">
+
+    <button type="submit">Submit Sick Leave</button>
+</form>
+
+<!-- Vacation Leave Form -->
+<h3>Vacation Leave Request</h3>
+<form id="vacationForm">
+    <label for="vacationStart">Start Date:</label>
+    <input type="date" id="vacationStart" required>
+
+    <label for="vacationEnd">End Date:</label>
+    <input type="date" id="vacationEnd" required>
+
+    <button type="submit">Submit Vacation Request</button>
+</form>
+
+<h2>Pending Leave Requests</h2>
+<table id="leaveRequestsTable" border="1">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    document.getElementById('sickLeaveForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        let sickLeaveData = {
+            EmployeeId: 1, // Example Employee ID, should be dynamic
+            Sick_Day: document.getElementById('sickDate').value,
+            Doctors_Note: document.getElementById('doctorsNote').value || null
+        };
+
+        fetch('/api/leave-requests/sick-leave', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sickLeaveData)
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('vacationForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        let vacationData = {
+            EmployeeId: 1, // Example Employee ID, should be dynamic
+            Vacation_Start_Date: document.getElementById('vacationStart').value,
+            Vacation_End_Date: document.getElementById('vacationEnd').value
+        };
+
+        fetch('/api/leave-requests/vacation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(vacationData)
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(error => console.error('Error:', error));
+    });
+
+    function loadPendingRequests() {
+        fetch('/api/leave-requests/pending')
+        .then(response => response.json())
+        .then(data => {
+            let tableBody = document.querySelector("#leaveRequestsTable tbody");
+            tableBody.innerHTML = "";
+
+            data.sickLeaves.forEach(request => {
+                let row = `<tr><td>Sick Leave</td><td>${request.Sick_Day}</td><td>-</td><td>${request.Status}</td></tr>`;
+                tableBody.innerHTML += row;
+            });
+
+            data.vacations.forEach(request => {
+                let row = `<tr><td>Vacation</td><td>${request.Vacation_Start_Date}</td><td>${request.Vacation_End_Date}</td><td>${request.Status}</td></tr>`;
+                tableBody.innerHTML += row;
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    window.onload = loadPendingRequests;
+</script>
