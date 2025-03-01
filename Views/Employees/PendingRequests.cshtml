@@ -1,0 +1,82 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "Pending Leave Requests";
+}
+
+<h1>Pending Leave Requests</h1>
+
+<h2>Sick Leaves</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Sick Day</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var leave in Model.sickLeaves)
+        {
+            <tr>
+                <td>@leave.EmployeeId</td>
+                <td>@leave.Sick_Day</td>
+                <td>@leave.Status</td>
+                <td>
+                    <form asp-action="ApproveLeave" method="post">
+                        <input type="hidden" name="id" value="@leave.EmployeeId" />
+                        <input type="hidden" name="type" value="sick" />
+                        <input type="hidden" name="approverId" value="1" /> <!-- Example approver ID -->
+                        <button type="submit" class="btn btn-success">Approve</button>
+                    </form>
+                    <form asp-action="DeclineLeave" method="post">
+                        <input type="hidden" name="id" value="@leave.EmployeeId" />
+                        <input type="hidden" name="type" value="sick" />
+                        <input type="hidden" name="approverId" value="1" /> <!-- Example approver ID -->
+                        <button type="submit" class="btn btn-danger">Decline</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Vacations</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var leave in Model.vacations)
+        {
+            <tr>
+                <td>@leave.EmployeeId</td>
+                <td>@leave.Vacation_Start_Date</td>
+                <td>@leave.Vacation_End_Date</td>
+                <td>@leave.Status</td>
+                <td>
+                    <form asp-action="ApproveLeave" method="post">
+                        <input type="hidden" name="id" value="@leave.EmployeeId" />
+                        <input type="hidden" name="type" value="vacation" />
+                        <input type="hidden" name="approverId" value="1" /> <!-- Example approver ID -->
+                        <button type="submit" class="btn btn-success">Approve</button>
+                    </form>
+                    <form asp-action="DeclineLeave" method="post">
+                        <input type="hidden" name="id" value="@leave.EmployeeId" />
+                        <input type="hidden" name="type" value="vacation" />
+                        <input type="hidden" name="approverId" value="1" /> <!-- Example approver ID -->
+                        <button type="submit" class="btn btn-danger">Decline</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
