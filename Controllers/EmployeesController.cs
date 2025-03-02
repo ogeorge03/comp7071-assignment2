@@ -178,6 +178,7 @@ namespace Assignment2.Controllers
             }
 
             var employee = await _context.Employees.FindAsync(id);
+
             if (employee == null)
             {
                 return NotFound();
@@ -190,9 +191,28 @@ namespace Assignment2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Job_Title,Pay_Rate_Amount,Employment_Start_Date,Employment_Termination_Date,First_Name,Middle_Name,Last_Name,Date_Of_Birth")] Employee employee)
+        public async Task<IActionResult> Edit(Employee viewModel)
         {
-            if (id != employee.Id)
+
+            var employee = await _context.Employees.FindAsync(viewModel.Id);
+
+            if (employee != null)
+            {
+                employee.First_Name = viewModel.First_Name;
+                employee.Middle_Name = viewModel.Middle_Name;
+                employee.Last_Name = viewModel.Last_Name;
+                employee.Date_Of_Birth = viewModel.Date_Of_Birth;
+                employee.Employer = viewModel.Employer;
+                employee.Emergency_Contact = viewModel.Emergency_Contact;
+                employee.Job_Title = viewModel.Job_Title;
+                employee.Employment_Start_Date = viewModel.Employment_Start_Date;
+                employee.Employment_Termination_Date = viewModel.Employment_Termination_Date;
+                employee.Pay_Rate_Amount = viewModel.Pay_Rate_Amount;
+
+                await _context.SaveChangesAsync();
+            }
+
+            if (viewModel == null)
             {
                 return NotFound();
             }
@@ -201,7 +221,7 @@ namespace Assignment2.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+                    _context.Update(viewModel);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
