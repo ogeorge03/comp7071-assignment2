@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Assignment2;
 using Assignment2.Models;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.Extensions.FileProviders;
 
 namespace Assignment2.Controllers
 {
@@ -158,6 +159,32 @@ namespace Assignment2.Controllers
             _context.Database.ExecuteSqlRaw(sql, CustomerId, id, ScheduledDate);
             
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> ViewServices(int? id) {
+
+            if (id == null) {
+                return NotFound();
+            }
+
+            var services = await _context.CustomerServiceScheduleDetails.FromSqlRaw(@"
+
+                                select 
+                                schedule.Id as [Id]
+                                ,service.Description as [Description]
+                                ,service.Hourly_Rate as [HourlyRate]
+                                ,cert.Certification_Authority as [CertificationAuthority]
+                                ,cert.Certification_Description as [CertificationDescription]
+                                ,schedule.Scheduled_DateTime as [ScheduledDateTime]
+                                from Customer_Service_Scheduled schedule
+                                left join Customer_Service service on service.Id = schedule.Customer_ServiceId
+                                left join Facility f on f.Id = schedule.FacilityId
+                                left join Certification cert on cert.Id = service.Certification_RequiredId
+                                where schedule.CustomerId = {0}
+                                order by schedule.Scheduled_DateTime asc
+            ", id).AsNoTracking().ToListAsync();
+
+            return View(services);
         }
 
 
