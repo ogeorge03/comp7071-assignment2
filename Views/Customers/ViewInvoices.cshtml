@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Assignment2.Models.CustomerInvoiceDetails>
+
+
+@{
+    ViewData["Title"] = "View Invoices";
+}
+
+<h1>Customer Services</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Description
+            </th>
+            <th>
+                Service Fee
+            </th>
+            <th>
+                Payment Due Date
+            </th>
+            <th>
+                Invoice Date
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServiceFee)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PaymentDueDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InvoiceDate)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

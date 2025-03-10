@@ -137,6 +137,7 @@ namespace Assignment2
         public DbSet<Customer> Customers { get; set; } = null!;
         public DbSet<CustomerDetails> CustomersDetails { get; set; } = null!; // DTO for raw SQL Queries
         public DbSet<Customer_Invoice> Customer_Invoices { get; set; } = null!;
+        public DbSet<CustomerInvoiceDetails> CustomerInvoiceDetails { get; set; } = null!; // DTO for raw SQL queries
         public DbSet<Customer_Service> Customer_Services { get; set; } = null!;
         public DbSet<CustomerServiceDetails> CustomerServiceDetails { get; set; } = null!; // DTO for raw SQL queries
         public DbSet<Customer_Service_Scheduled> Customer_Service_Scheduleds { get; set; } = null!;

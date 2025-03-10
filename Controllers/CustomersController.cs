@@ -187,6 +187,32 @@ namespace Assignment2.Controllers
             return View(services);
         }
 
+        public async Task<IActionResult> ViewInvoices(int? id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var invoices = await _context.CustomerInvoiceDetails.FromSqlRaw(@"
+
+                                select
+                                inv.id
+                                ,service.Description
+                                ,inv.Service_Fee as [ServiceFee]
+                                ,inv.Payment_Due_Date as [PaymentDueDate]
+                                ,inv.Invoice_Date as [InvoiceDate]
+                                from Customer_Invoice inv
+                                inner join Customer_Service_Scheduled schedule on schedule.Id = inv.Service_RenderedId
+                                left join Customer_Service service on service.Id = schedule.Customer_ServiceId
+                                where schedule.CustomerId = {0}
+                                order by inv.Invoice_Date asc
+            ", id).AsNoTracking().ToListAsync();
+
+            return View(invoices);
+        }
+
 
         // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
