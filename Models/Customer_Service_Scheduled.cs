@@ -6,7 +6,7 @@
         public int Id { get; set; }
         public Customer Customer { get; set; }
         public Customer_Service Customer_Service { get; set; }
-        public Facility Facility { get; set; }
+        public Facility? Facility { get; set; }
         public DateTime Scheduled_DateTime { get; set; }
         public DateTime? Rendered_DateTime { get; set; }
         public decimal? Service_Fee { get; set; }

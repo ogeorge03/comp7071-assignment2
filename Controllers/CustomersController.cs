@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Assignment2;
 using Assignment2.Models;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace Assignment2.Controllers
 {
@@ -22,7 +23,19 @@ namespace Assignment2.Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Customers.ToListAsync());
+            var customers = await _context.CustomersDetails.FromSqlRaw(@"
+                            select
+                            p.Id as [Id]
+                            ,p.First_Name as [FirstName]
+                            ,p.Middle_Name as [MiddleName]
+                            ,p.Last_Name as [LastName]
+                            ,p.Date_Of_Birth as [Date_Of_Birth]
+                            ,c.Customer_Notes
+                            ,c.Payment_Information
+                            from Customer c
+                            inner join Person p on p.Id = c.Id
+            ").AsNoTracking().ToListAsync();
+            return View(customers);
         }
 
         // GET: Customers/Details/5
@@ -114,7 +127,39 @@ namespace Assignment2.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
+        
         }
+
+        public async Task<IActionResult> RegisterService(int? id) {
+
+            var customerServices = await _context.CustomerServiceDetails.FromSqlRaw(@"
+                            select
+                            cs.Id,
+                            cs.Description
+                            ,cs.Hourly_Rate
+                            ,cs.Certification_RequiredId as [Certification_Required]
+                            ,cert.Id as [Certification_Id]
+                            ,cert.Certification_Description
+                            ,cert.Certification_Authority
+                            ,cert.Certification_Number
+                            from Customer_Service cs 
+                            inner join Certification cert on cert.Id = cs.Certification_RequiredId
+            ").AsNoTracking().ToListAsync();
+            ViewData["CustomerId"] = id;
+            return View(customerServices);
+        }
+
+        public IActionResult ScheduleService(int? id, int? CustomerId, DateTime ScheduledDate) {
+            if (ScheduledDate == default) {
+                return BadRequest("Scheduled date is required");
+            }
+
+            string sql = "insert into Customer_Service_Scheduled (CustomerId, Customer_ServiceId, Scheduled_DateTime) values ({0}, {1}, {2})";
+            _context.Database.ExecuteSqlRaw(sql, CustomerId, id, ScheduledDate);
+            
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
