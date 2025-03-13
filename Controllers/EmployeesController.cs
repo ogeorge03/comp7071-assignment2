@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Assignment2;
 using Assignment2.Models;
+using Humanizer;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Assignment2.Controllers
 {
@@ -105,7 +107,6 @@ namespace Assignment2.Controllers
                         where EmployeeId = {0}
             ", id).AsNoTracking().ToListAsync();
 
-
             return View(shifts);
         }
 
@@ -127,6 +128,24 @@ namespace Assignment2.Controllers
         }
 
         public async Task<IActionResult> WorkHistory(int? id) {
+
+            var shifts = await _context.ShiftScheduleDetails.FromSqlRaw(@"
+                        select 
+                        0 as id
+                        ,Start_Datetime
+                        ,Hours_Scheduled
+                        ,Hours_Completed
+                        ,Comments
+                        , (select First_Name + ' ' + Last_Name from Person where Id = SupervisorId) as [Supervisor]
+                        from Shift_Schedule
+                        where EmployeeId = {0}
+            ", id).ToListAsync();
+            
+            if (shifts != null)
+            {
+                await _context.SaveChangesAsync();
+            }
+            
             if (id == null)
             {
                 return NotFound();
@@ -145,6 +164,121 @@ namespace Assignment2.Controllers
             ", id).AsNoTracking().ToListAsync();
 
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSickLeave(int? id, Employee_Sick_Leave viewModel)
+        {
+            
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var sickLeave = await _context.Employee_Sick_Leaves
+                .FirstOrDefaultAsync(s => s.EmployeeId == id);
+
+            if (sickLeave != null)
+            {
+                sickLeave.Sick_Day = viewModel.Sick_Day;
+                sickLeave.Doctors_Note = viewModel.Doctors_Note;
+                // _context.Entry(sickLeave).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            
+            if (viewModel == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //_context.Update(viewModel);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmployeeExists(sickLeave.EmployeeId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(sickLeave);
+        }
+
+        public async Task<IActionResult> EditVacation(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vacation = await _context.Employee_Vacations.SingleOrDefaultAsync(v => v.EmployeeId == id);
+
+
+            if (vacation == null)
+            {
+                return NotFound();
+            }
+
+            return View(vacation);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditVacation(int? id, Employee_Vacation viewModel)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vacation = await _context.Employee_Vacations.SingleOrDefaultAsync(v => v.EmployeeId == id);
+
+            if (vacation != null)
+            {
+                vacation.Vacation_Start_Date = viewModel.Vacation_Start_Date;
+                vacation.Vacation_End_Date = viewModel.Vacation_End_Date;
+                vacation.Is_SuperVisor_Approved = viewModel.Is_SuperVisor_Approved;
+                vacation.Is_Paid_Vacation = viewModel.Is_Paid_Vacation;
+                vacation.Approval_Date = viewModel.Approval_Date;
+                await _context.SaveChangesAsync();
+            }
+
+            if (viewModel == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(viewModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmployeeExists(vacation.EmployeeId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(vacation);
         }
 
         // GET: Employees/Create

@@ -67,10 +67,10 @@ namespace Assignment2
                 entity.HasKey(e => new { e.Customer_Service_ScheduledId, e.EmployeeId });
             });
 
-            modelBuilder.Entity<Employee_Sick_Leave>(static entity =>
+            modelBuilder.Entity<Employee_Sick_Leave>(entity =>
             {
                 entity.ToTable("Employee_Sick_Leave");
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.EmployeeId } );
             });
 
             modelBuilder.Entity<Employee_Vacation>(entity =>
@@ -113,6 +113,12 @@ namespace Assignment2
             {
                 entity.ToTable("Shift_Schedule");
                 entity.HasNoKey();
+            });
+
+            modelBuilder.Entity<ShiftScheduleDetails>(entity =>
+            {
+                entity.ToTable("ShiftScheduleDetails");
+                entity.HasKey(s => new { s.Id });
             });
 
             modelBuilder.Entity<StAddress>(entity =>

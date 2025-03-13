@@ -1,0 +1,74 @@
+﻿@model Assignment2.Models.Employee_Vacation
+
+@{
+    ViewData["Title"] = "EditVacation";
+}
+
+<h1>Edit</h1>
+
+<h4>Edit Vacation</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditVacation">
+
+            <div class="form-group">
+                <label asp-for="Vacation_Start_Date" class="control-label"></label>
+                <input asp-for="Vacation_Start_Date" class="form-control" />
+                <span asp-validation-for="Vacation_Start_Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Vacation_End_Date" class="control-label"></label>
+                <input asp-for="Vacation_End_Date" class="form-control" />
+                <span asp-validation-for="Vacation_Start_Date" class="text-danger"></span>
+            </div>
+            <!--
+            <div class="form-group">
+                <label asp-for="Is_SuperVisor_Approved" class="control-label"></label>
+                <input asp-for="Is_SuperVisor_Approved" class="form-control" />
+                <span asp-validation-for="Is_SuperVisor_Approved" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Is_Paid_Vacation" class="control-label"></label>
+                <input asp-for="Is_Paid_Vacation" class="form-control" />
+                <span asp-validation-for="Is_Paid_Vacation" class="text-danger"></span>
+            </div>
+            -->
+            <div class="form-group">
+                <label asp-for="Approval_Date" class="control-label"></label>
+                <input asp-for="Approval_Date" class="form-control" />
+                <span asp-validation-for="Approval_Date" class="text-danger"></span>
+            </div>
+
+            <!--
+            <div class="form-group">
+                <label asp-for="Model.End_Datetime" class="control-label"></label>
+                <input type="number" id="End" name="End" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Model.Is_SuperVisor_Approved" class="control-label"></label>
+                <textarea id="Approved" name="Approved" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Employee_Vacation.Is_Paid_Vacation" class="control-label"></label>
+                <textarea id="Paid" name="Paid" class="form-control"></textarea>
+            </div>
+            -->
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

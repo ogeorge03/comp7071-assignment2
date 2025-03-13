@@ -1,0 +1,40 @@
+﻿@model Assignment2.Models.Employee_Sick_Leave;
+
+@{
+    ViewData["Title"] = "EditSickLeave";
+}
+
+<h1>Edit</h1>
+
+<h4>Edit Sick Leave</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditSickLeave">
+
+            <div class="form-group">
+                <label asp-for="Sick_Day" class="control-label"></label>
+                <input asp-for="Sick_Day" class="form-control" />
+                <span asp-validation-for="Sick_Day" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Doctors_Note" class="control-label"></label>
+                <input asp-for="Doctors_Note" class="form-control" />
+                <span asp-validation-for="Doctors_Note" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

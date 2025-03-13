@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Assignment2.Models.ShiftScheduleDetails
+
+@{
     ViewData["Title"] = "Work History";
 }
 
@@ -42,7 +44,7 @@
                 Vacation End Date
             </th>
             <th>
-               Supervisor Approved
+                Supervisor Approved
             </th>
             <th>
                 Approved Date
@@ -71,6 +73,9 @@
                 <td>
                     @(holiday.Is_Paid_Vacation ? "Yes" : "No")
                 </td>
+                <td>
+                    <a href="@Url.Action("EditVacation", new { id = @holiday.Id + 1})" class="btn btn-primary">Edit</a>
+                </td>
             </tr>
         }
     </tbody>
@@ -98,6 +103,9 @@
                 </td>
                 <td>
                     @sickDay.Doctors_Note
+                </td>
+                <td>
+                    <a href="@Url.Action("EditSickLeave", new { id = @sickDay.EmployeeId})" class="btn btn-primary">Edit</a>
                 </td>
             </tr>
         }
