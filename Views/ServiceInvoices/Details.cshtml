@@ -1,0 +1,48 @@
+﻿@model Assignment2.Models.ServiceInvoice
+
+@{
+    ViewData["Title"] = "Service Invoice Details";
+}
+
+<h1>Service Invoice Details</h1>
+
+<div>
+    <h4>Service Invoice</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Service Appointment
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ServiceAppointment.Id
+        </dd>
+        <dt class="col-sm-2">
+            Amount
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Amount
+        </dd>
+        <dt class="col-sm-2">
+            Invoice Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.InvoiceDate.ToString("yyyy-MM-dd")
+        </dd>
+        <dt class="col-sm-2">
+            Payment Due Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.PaymentDueDate?.ToString("yyyy-MM-dd")
+        </dd>
+        <dt class="col-sm-2">
+            Is Paid
+        </dt>
+        <dd class="col-sm-10">
+            @Model.IsPaid
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

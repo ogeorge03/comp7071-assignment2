@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Assignment2;
+using Assignment2.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,9 @@ using (var scope = app.Services.CreateScope())
     //dbContext.Database.EnsureDeleted();
     dbContext.Database.EnsureCreated();
 }
+
+// Add email services to the container
+builder.Services.AddTransient<EmailService>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
