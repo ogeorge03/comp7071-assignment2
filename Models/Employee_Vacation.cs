@@ -11,7 +11,6 @@
         public Employee Supervisor { get; set; }
         public DateTime? Approval_Date { get; set; }
         public bool Is_Paid_Vacation { get; set; }
-
-
+        public string? Status { get; set; }
     }
 }

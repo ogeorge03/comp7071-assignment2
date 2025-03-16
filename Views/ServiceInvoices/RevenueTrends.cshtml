@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Assignment2.ViewModels.RevenueTrendViewModel>
+
+@{
+    ViewData["Title"] = "Revenue Trends";
+}
+
+<h1>Revenue Trends</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Period</th>
+            <th>Total Revenue</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Period.ToString("yyyy-MM")</td>
+                <td>@item.TotalRevenue.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>

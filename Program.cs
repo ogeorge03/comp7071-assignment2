@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Assignment2;
+using Assignment2.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,9 @@ builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
+builder.Services.AddTransient<EmailService>();
+
+
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
@@ -16,6 +20,8 @@ using (var scope = app.Services.CreateScope())
     //dbContext.Database.EnsureDeleted();
     dbContext.Database.EnsureCreated();
 }
+
+// Add email services to the container
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -37,5 +43,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapControllers();
 
 app.Run();

@@ -1,0 +1,54 @@
+﻿@model Assignment2.Models.ServiceAppointment
+
+@{
+    ViewData["Title"] = "Service Appointment Details";
+}
+
+<h1>Service Appointment Details</h1>
+
+<div>
+    <h4>Service Appointment</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Customer
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Customer.First_Name @Model.Customer.Last_Name
+        </dd>
+        <dt class="col-sm-2">
+            Service
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Service.Description
+        </dd>
+        <dt class="col-sm-2">
+            Appointment Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.AppointmentDate.ToString("yyyy-MM-dd")
+        </dd>
+        <dt class="col-sm-2">
+            Start Time
+        </dt>
+        <dd class="col-sm-10">
+            @Model.StartTime
+        </dd>
+        <dt class="col-sm-2">
+            End Time
+        </dt>
+        <dd class="col-sm-10">
+            @Model.EndTime
+        </dd>
+        <dt class="col-sm-2">
+            Notes
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Notes
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
