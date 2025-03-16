@@ -10,6 +10,9 @@ builder.Services.AddDbContext<Context>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
+builder.Services.AddTransient<EmailService>();
+
+
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
@@ -19,7 +22,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Add email services to the container
-builder.Services.AddTransient<EmailService>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
