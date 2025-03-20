@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Assignment2.Models.Payroll>
+
+
+@{
+    ViewData["Title"] = "Payroll";
+}
+
+<h1>Payroll</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Processed Datetime
+            </th>
+            <th>
+               Regular Pay
+            </th>
+            <th>
+               Overtime Pay
+            </th>
+            <th>
+               Vacation Pay
+            </th>
+            <th>
+               Tax
+            </th>
+            <th>
+                Payroll Adjustment
+            </th>
+            <th>
+               Adjustment Reason
+            </th>
+            <th>
+               Start Date
+            </th>
+            <th>
+                End Date
+            </th>
+            <th>
+                Direct Deposit
+            </th>
+            <th>
+                Check Number
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Processed_Datetime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Regular_Pay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Overtime_Pay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vacation_Pay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tax_Withheld)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Payroll_Adjustment)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adjustment_Reason)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pay_Period_Start_Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pay_Period_End_Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Direct_Deposit_Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Check_Number)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

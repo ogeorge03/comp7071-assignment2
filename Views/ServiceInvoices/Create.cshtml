@@ -1,0 +1,43 @@
+﻿@model Assignment2.Models.ServiceInvoice
+
+@{
+    ViewData["Title"] = "Create Service Invoice";
+}
+
+<h1>Create Service Invoice</h1>
+
+<h4>Service Invoice</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div class="form-group">
+                <label asp-for="ServiceAppointmentId" class="control-label"></label>
+                <select asp-for="ServiceAppointmentId" class="form-control" asp-items="ViewBag.ServiceAppointmentId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="InvoiceDate" class="control-label"></label>
+                <input asp-for="InvoiceDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentDueDate" class="control-label"></label>
+                <input asp-for="PaymentDueDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="IsPaid" class="control-label"></label>
+                <input asp-for="IsPaid" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

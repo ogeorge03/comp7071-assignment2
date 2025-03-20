@@ -1,0 +1,69 @@
+﻿@model Assignment2.Models.Employee
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Employee</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Job_Title" class="control-label"></label>
+                <input asp-for="Job_Title" class="form-control" />
+                <span asp-validation-for="Job_Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Pay_Rate_Amount" class="control-label"></label>
+                <input asp-for="Pay_Rate_Amount" class="form-control" />
+                <span asp-validation-for="Pay_Rate_Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employment_Start_Date" class="control-label"></label>
+                <input asp-for="Employment_Start_Date" class="form-control" />
+                <span asp-validation-for="Employment_Start_Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Employment_Termination_Date" class="control-label"></label>
+                <input asp-for="Employment_Termination_Date" class="form-control" />
+                <span asp-validation-for="Employment_Termination_Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="First_Name" class="control-label"></label>
+                <input asp-for="First_Name" class="form-control" />
+                <span asp-validation-for="First_Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Middle_Name" class="control-label"></label>
+                <input asp-for="Middle_Name" class="form-control" />
+                <span asp-validation-for="Middle_Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Last_Name" class="control-label"></label>
+                <input asp-for="Last_Name" class="form-control" />
+                <span asp-validation-for="Last_Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Date_Of_Birth" class="control-label"></label>
+                <input asp-for="Date_Of_Birth" class="form-control" />
+                <span asp-validation-for="Date_Of_Birth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

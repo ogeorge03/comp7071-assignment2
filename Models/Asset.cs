@@ -1,10 +1,10 @@
-﻿namespace MVCSampleApp.Models
+﻿namespace Assignment2.Models
 {
     public class Asset
     {
         public int Id { get; set; }
         public Asset? Parent_Asset { get; set; }
-        public Asset_Type Type { get; set; }
+        public int Asset_TypeId { get; set; }
         public string Name { get; set; }
         public string? Color { get; set; }
         public decimal? Rental_Rate { get; set; }

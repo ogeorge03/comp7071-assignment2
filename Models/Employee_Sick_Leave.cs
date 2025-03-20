@@ -1,10 +1,19 @@
-﻿namespace MVCSampleApp.Models
+﻿namespace Assignment2.Models
 {
     public class Employee_Sick_Leave
     {
-        public Employee Employee { get; set; }
+        public int EmployeeId { get; set; }
         public DateTime Sick_Day { get; set; }
         public string? Doctors_Note { get; set; }
+        public string? Status { get; set; }
+        public void Approve()
+        {
+            Status = "Approved";
+        }
 
+        public void Decline()
+        {
+            Status = "Declined";
+        }
     }
 }

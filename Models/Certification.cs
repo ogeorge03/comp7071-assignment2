@@ -1,4 +1,4 @@
-﻿namespace MVCSampleApp.Models
+﻿namespace Assignment2.Models
 {
     public class Certification
     {
@@ -8,5 +8,6 @@
 
         public string? Certification_Number { get; set; }
 
+       // public ICollection<Employee_Certification> Employee_Certifications { get; set; }
     }
 }

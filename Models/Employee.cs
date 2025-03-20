@@ -1,6 +1,7 @@
-﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Blazor;
+﻿
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MVCSampleApp.Models
+namespace Assignment2.Models
 {
     public class Employee : Person
     {
@@ -22,8 +23,11 @@ namespace MVCSampleApp.Models
         public DateTime Employment_Start_Date { get; set; }
 
         public DateTime? Employment_Termination_Date { get; set; }
+        public ICollection<Employee_Certification> Employee_Certifications { get; set; }
+        public ICollection<Employee_Service_Assignment> Employee_Service_Assignments { get; set; }
 
-
-
+        [NotMapped]
+        public ICollection<Employee_Sick_Leave> Employee_Sick_Leaves { get; set; }
+        public ICollection<Employee_Vacation> Employee_Vacations { get; set; }
     }
 }
