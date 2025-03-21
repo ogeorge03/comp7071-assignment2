@@ -9,6 +9,8 @@ using Assignment2;
 using Assignment2.Models;
 using Humanizer;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.Data.SqlClient;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Assignment2.Controllers
 {
@@ -89,7 +91,7 @@ namespace Assignment2.Controllers
             return View(employee);
         }
 
-        public async Task<IActionResult> Shifts(int? id) {
+        public async Task<IActionResult> Shifts(int? id, int? sid) {
             if (id == null)
             {
                 return NotFound();
@@ -105,9 +107,115 @@ namespace Assignment2.Controllers
                         , (select First_Name + ' ' + Last_Name from Person where Id = SupervisorId) as [Supervisor]
                         from Shift_Schedule
                         where EmployeeId = {0}
-            ", id).AsNoTracking().ToListAsync();
+            ", id).ToListAsync();
+
+            var ss = await _context.Shift_Schedules.FirstOrDefaultAsync(s => s.EmployeeId == id);
+
+            ViewData["id"] = id;
 
             return View(shifts);
+        }
+
+        [HttpGet]
+        public IActionResult CreateShift(int id)
+        {
+            var ss = _context.Shift_Schedules
+                .Where(s => s.EmployeeId == id);
+
+            ViewData["id"] = id;
+            ViewData["sid"] = ss.FirstOrDefault()?.SupervisorId;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateShift(int id, DateTime Start_Datetime, int Hours_Scheduled, int Hours_Completed, string? Comments)
+        {
+            var ss = await _context.Shift_Schedules
+                .Where(s => s.EmployeeId == id)
+                .ToListAsync();
+
+            if (ModelState.IsValid)
+            {
+                string sql = "INSERT INTO Shift_Schedule(EmployeeId, SupervisorId, Start_Datetime, Hours_Scheduled, Hours_Completed, Comments)" +
+                    "VALUES({0}, {1}, {2}, {3}, {4}, {5})";
+                int rowsAffected = _context.Database.ExecuteSqlRaw(sql, id, ss.FirstOrDefault()?.SupervisorId, Start_Datetime, Hours_Scheduled, Hours_Completed, Comments);
+            }
+
+            return View();
+        }
+
+        public async Task<IActionResult> EditShift(int? id)
+        {
+            var shifts = await _context.ShiftScheduleDetails.FromSqlRaw(@"
+                        select 
+                        0 as id
+                        ,Start_Datetime
+                        ,Hours_Scheduled
+                        ,Hours_Completed
+                        ,Comments
+                        , (select First_Name + ' ' + Last_Name from Person where Id = SupervisorId) as [Supervisor]
+                        from Shift_Schedule
+                        where EmployeeId = {0}
+                        and Start_Datetime = (select Start_Datetime from Shift_Schedule)
+            ", id).SingleOrDefaultAsync();
+
+            if (shifts == null)
+            {
+                return NotFound();
+            }
+
+            return View(shifts);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditShift(int id, ShiftScheduleDetails viewModel)
+        {
+
+            var shift = await _context.Shift_Schedules.SingleOrDefaultAsync(s => s.EmployeeId == id);
+
+            if (ModelState.IsValid)
+            {
+                string sql = "UPDATE Shift_Schedule SET " +
+                    "Start_Datetime = {0}, " +
+                    "Hours_Scheduled = {1}, " +
+                    "Hours_Completed = {2}, " +
+                    "Comments = {3} " +
+                    "WHERE EmployeeId = {4} ";
+
+                int rowsAffected = _context.Database.ExecuteSqlRaw(sql, viewModel.Start_Datetime,
+                    viewModel.Hours_Scheduled, viewModel.Hours_Completed, viewModel.Comments, id);
+
+                await _context.SaveChangesAsync();
+            }
+
+            if (viewModel == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //_context.Update(viewModel);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmployeeExists(viewModel.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Payroll(int? id) {
@@ -163,14 +271,45 @@ namespace Assignment2.Controllers
                         select * from Employee_Sick_Leave where EmployeeId = {0}
             ", id).AsNoTracking().ToListAsync();
 
+            ViewData["id"] = id;
+
+            var ev = _context.Employee_Vacations
+                .Where(v => v.EmployeeId == id);
+
+            var em = _context.Employees
+                .Include(e => e.Supervisor)
+                .Where(e => e.Id == id);
+
+            ViewData["eid"] = ev.FirstOrDefault()?.EmployeeId;
+            ViewData["sid"] = em.FirstOrDefault()?.Supervisor?.Id;
+
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditSickLeave(int? id, Employee_Sick_Leave viewModel)
+        [HttpGet("Employees/CreateSickLeave/{id}")]
+        public IActionResult CreateSickLeave()
         {
-            
+            return View();
+        }
+
+        [HttpPost("Employees/CreateSickLeave/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSickLeave(int id, DateTime Sick_Day, string Doctors_Note)
+        {
+
+            if (ModelState.IsValid)
+            {
+                string sql = "INSERT INTO Employee_Sick_Leave(EmployeeId, Sick_Day, Doctors_Note)" +
+                    "VALUES({0}, {1}, {2})";
+                int rowsAffected = _context.Database.ExecuteSqlRaw(sql, id, Sick_Day, Doctors_Note);
+            }
+
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditSickLeave(int? id)
+        {
             if (id == null)
             {
                 return NotFound();
@@ -179,11 +318,33 @@ namespace Assignment2.Controllers
             var sickLeave = await _context.Employee_Sick_Leaves
                 .FirstOrDefaultAsync(s => s.EmployeeId == id);
 
+
+            if (sickLeave == null)
+            {
+                return NotFound();
+            }
+
+            return View(sickLeave);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSickLeave(int? id, DateTime sick_day, Employee_Sick_Leave viewModel)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var sickLeave = await _context.Employee_Sick_Leaves
+                .FirstOrDefaultAsync(s => s.EmployeeId == id && DateTime.Compare(s.Sick_Day, sick_day) == 0);  
+
             if (sickLeave != null)
             {
                 sickLeave.Sick_Day = viewModel.Sick_Day;
                 sickLeave.Doctors_Note = viewModel.Doctors_Note;
-                // _context.Entry(sickLeave).State = EntityState.Modified;
+                //_context.Entry(sickLeave).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             
@@ -212,6 +373,48 @@ namespace Assignment2.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(sickLeave);
+        }
+
+        [HttpGet("Employees/CreateVacation/{id}")]
+        public IActionResult CreateVacation(int id)
+        {
+            var ev = _context.Employee_Vacations
+                .Where(v => v.EmployeeId == id);
+
+            ViewData["eid"] = ev.FirstOrDefault()?.EmployeeId;
+
+            return View();
+        }
+
+        [HttpPost("Employees/CreateVacation/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateVacation(int id, DateTime Vacation_Start_Date,
+            DateTime Vacation_End_Date, bool Is_Supervisor_Approved, bool Is_Paid_Vacation,
+            DateTime Approval_Date)
+        {
+
+            var ev = await _context.Employee_Vacations
+                .Where(v => v.EmployeeId == id)
+                .ToListAsync();
+
+            var em = await _context.Employees
+                .Include(e => e.Supervisor)
+                .Where(e => e.Id == id)
+                .ToListAsync();
+
+            ViewData["eid"] = ev.FirstOrDefault()?.EmployeeId;
+            ViewData["sid"] = em.FirstOrDefault()?.Supervisor?.Id;
+
+            if (ModelState.IsValid)
+            {
+                string sql = "INSERT INTO Employee_Sick_Leave(EmployeeId, SupervisorId," +
+                    "Vacation_Start_Date, Vacation_End_Date, Is_Supervisor_Approved," +
+                    "Is_Paid_Vacation) VALUES({0}, {1}, {2}, {3}, {4}, {5}, {6})";
+                int rowsAffected = _context.Database.ExecuteSqlRaw(sql, id, em.FirstOrDefault()?.Supervisor?.Id,
+                    Vacation_Start_Date, Vacation_End_Date, Is_Supervisor_Approved, Is_Paid_Vacation, Approval_Date);
+            }
+
+            return View();
         }
 
         public async Task<IActionResult> EditVacation(int? id)
@@ -292,19 +495,35 @@ namespace Assignment2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Job_Title,Pay_Rate_Amount,Employment_Start_Date,Employment_Termination_Date,First_Name,Middle_Name,Last_Name,Date_Of_Birth")] Employee employee)
+        public async Task<IActionResult> Create(Employee createModel)
         {
-            if (ModelState.IsValid)
+            var newEmployee = new Employee
             {
-                _context.Add(employee);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(employee);
+                Job_Title = createModel.Job_Title,
+                Pay_Rate_Amount = createModel.Pay_Rate_Amount,
+                Employment_Start_Date = createModel.Employment_Start_Date,
+                First_Name = createModel.First_Name,
+                Middle_Name = createModel.Middle_Name,
+                Last_Name = createModel.Last_Name,
+                Date_Of_Birth = createModel.Date_Of_Birth
+            };
+
+            /*
+            var newPerson = new Person
+            {
+
+            };
+            */
+
+            _context.Add(newEmployee);
+            _context.SaveChanges();
+         
+            return View();
         }
 
         // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
+
         {
             if (id == null)
             {

@@ -1,11 +1,15 @@
 ﻿@model IEnumerable<Assignment2.Models.ShiftScheduleDetails>
 
-
 @{
-    ViewData["Title"] = "Shifts";
+    ViewData["Title"] = "CreateShift";
+    var id = ViewData["id"];
 }
 
 <h1>Shifts</h1>
+
+<p>
+    <a href="@Url.Action("CreateShift", new { id = @id })" class="btn btn-primary">Create Shift</a>
+</p>
 
 <table class="table">
     <thead>
@@ -28,26 +32,29 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Start_Datetime)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Hours_Scheduled)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Hours_Completed)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Comments)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Supervisor)
-            </td>
-
-        </tr>
-            }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Start_Datetime)
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Hours_Scheduled)
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Hours_Completed)
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Comments)
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.Supervisor)
+                </td>
+                <td>
+                    <a href="@Url.Action("EditShift", new { id = @id })" class="btn btn-primary">Edit</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 <div>

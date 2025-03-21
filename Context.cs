@@ -52,6 +52,10 @@ namespace Assignment2
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.ToTable("Employee");
+                /*
+                entity.HasOne(e => e.Supervisor)  // Each employee has one supervisor
+                .WithMany();
+                */
             });
 
             modelBuilder.Entity<Employee_Certification>(entity =>
@@ -70,7 +74,7 @@ namespace Assignment2
             modelBuilder.Entity<Employee_Sick_Leave>(entity =>
             {
                 entity.ToTable("Employee_Sick_Leave");
-                entity.HasKey(e => new { e.EmployeeId } );
+                entity.HasKey(esl => new { esl.EmployeeId, esl.Sick_Day });
             });
 
             modelBuilder.Entity<Employee_Vacation>(entity =>
@@ -118,7 +122,7 @@ namespace Assignment2
             modelBuilder.Entity<ShiftScheduleDetails>(entity =>
             {
                 entity.ToTable("ShiftScheduleDetails");
-                entity.HasKey(s => new { s.Id });
+                entity.HasKey(s => new {s.Id, s.Start_Datetime});
             });
 
             modelBuilder.Entity<StAddress>(entity =>

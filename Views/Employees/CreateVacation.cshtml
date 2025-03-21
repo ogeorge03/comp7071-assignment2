@@ -1,17 +1,20 @@
 ﻿@model Assignment2.Models.Employee_Vacation
 
 @{
-    ViewData["Title"] = "EditVacation";
+    ViewData["Title"] = "CreateVacation";
+    var eid = ViewData["eid"];
+    var sid = ViewData["sid"];
 }
 
-<h1>Edit</h1>
+<h1>Create</h1>
 
-<h4>Edit Vacation</h4>
+<h4>Create Vacation</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditVacation">
-
+        <form asp-action="EditVacation" method="post">
+            <input  asp-for="EmployeeId" value="@eid" />
+            <input  asp-for="Supervisor" value="@sid" />
             <div class="form-group">
                 <label asp-for="Vacation_Start_Date" class="control-label"></label>
                 <input asp-for="Vacation_Start_Date" class="form-control" />
