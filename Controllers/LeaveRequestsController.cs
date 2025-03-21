@@ -1,21 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Assignment2.Models;
-using System.Threading.Tasks;
-using System.Linq;
 using Assignment2.Services;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Assignment2.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class LeaveRequestsController : Controller
     {
         private readonly Context _context;
-
-        public LeaveRequestsController(Context context)
-        {
-            _context = context;
-        }
-
         private readonly EmailService _emailService;
 
         public LeaveRequestsController(Context context, EmailService emailService)
@@ -24,7 +20,45 @@ namespace Assignment2.Controllers
             _emailService = emailService;
         }
 
-        // GET: LeaveRequests
+        [HttpPost("sick-leave")]
+        public async Task<IActionResult> RequestSickLeave([FromBody] Employee_Sick_Leave leaveRequest)
+        {
+            if (leaveRequest.Sick_Day == default)
+            {
+                return BadRequest(new { message = "Sick day is required." });
+            }
+
+            leaveRequest.Status = "Pending";
+            _context.Employee_Sick_Leaves.Add(leaveRequest);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Sick leave request submitted successfully." });
+        }
+
+        [HttpPost("vacation")]
+        public async Task<IActionResult> RequestVacation([FromBody] Employee_Vacation leaveRequest)
+        {
+            if (leaveRequest.Vacation_Start_Date == default || leaveRequest.Vacation_End_Date == default)
+            {
+                return BadRequest(new { message = "Vacation start and end dates are required." });
+            }
+
+            leaveRequest.Status = "Pending";
+            _context.Employee_Vacations.Add(leaveRequest);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Vacation request submitted successfully." });
+        }
+
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetPendingRequests()
+        {
+            var pendingSickLeaves = await _context.Employee_Sick_Leaves.Where(l => l.Status == "Pending").ToListAsync();
+            var pendingVacations = await _context.Employee_Vacations.Where(l => l.Status == "Pending").ToListAsync();
+            return Ok(new { sickLeaves = pendingSickLeaves, vacations = pendingVacations });
+        }
+
+        // Web-based View for Admin
         public async Task<IActionResult> Index()
         {
             var pendingSickLeaves = await _context.Employee_Sick_Leaves.Where(l => l.Status == "Pending").ToListAsync();
@@ -34,7 +68,7 @@ namespace Assignment2.Controllers
             return View();
         }
 
-        // POST: LeaveRequests/ApproveLeave
+        // POST: ApproveLeave (Web Form)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveLeave(int id, string type)
@@ -61,12 +95,11 @@ namespace Assignment2.Controllers
                 employeeId = leave.EmployeeId;
             }
 
-            // Fetch employee's email
             if (employeeId.HasValue)
             {
                 var employee = await _context.Employees
-                .Include(e => e.Contact_Information)
-                .FirstOrDefaultAsync(e => e.Id == employeeId.Value);
+                    .Include(e => e.Contact_Information)
+                    .FirstOrDefaultAsync(e => e.Id == employeeId.Value);
 
                 var email = employee?.Contact_Information?
                     .FirstOrDefault(c => c.Contact_Type == Contact_Information.CONTACT_TYPE.EMAIL)
@@ -86,8 +119,7 @@ namespace Assignment2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-        // POST: LeaveRequests/DeclineLeave
+        // POST: DeclineLeave (Web Form)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeclineLeave(int id, string type)
@@ -110,6 +142,7 @@ namespace Assignment2.Controllers
             {
                 return BadRequest("Invalid leave type.");
             }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
