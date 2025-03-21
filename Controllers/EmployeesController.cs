@@ -25,25 +25,31 @@ namespace Assignment2.Controllers
 
             var employees = await _context.EmployeesDetails.FromSqlRaw(@"
                             select 
-                            p.id
-                            ,p.First_Name as [FirstName]
-                            ,p.Middle_Name as [MiddleName]
-                            ,p.Last_Name as [LastName]
-                            ,p.Date_Of_Birth as [DateOfBirth]
-                            ,stadd.Street_Name as [StreetName]
-                            ,stadd.City
-                            ,stadd.Postal_Code as [PostalCode]
-                            ,stadd.Country
-                            ,(select Legal_Name from Org where Id = e.EmployerId) as [Employer]
-                            ,(select First_Name + ' ' + Last_Name from Person where Id = e.Emergency_ContactId) as [EmergencyContact]
-                            ,e.Job_Title as [JobTitle]
-                            ,e.Employment_Start_Date as [EmploymentStartDate]
-                            ,e.Employment_Termination_Date as [EmploymentTerminationDate]
-                            ,e.Pay_Rate_Amount as [PayRateAmount]
+                                p.id,
+                                p.First_Name as [FirstName],
+                                p.Middle_Name as [MiddleName],
+                                p.Last_Name as [LastName],
+                                p.Date_Of_Birth as [DateOfBirth],
+                                stadd.Street_Name as [StreetName],
+                                stadd.City,
+                                stadd.Postal_Code as [PostalCode],
+                                stadd.Country,
+                                (select Legal_Name from Org where Id = e.EmployerId) as [Employer],
+                                (select First_Name + ' ' + Last_Name from Person where Id = e.Emergency_ContactId) as [EmergencyContact],
+                                e.Job_Title as [JobTitle],
+                                e.Employment_Start_Date as [EmploymentStartDate],
+                                e.Employment_Termination_Date as [EmploymentTerminationDate],
+                                e.Pay_Rate_Amount as [PayRateAmount],
+                                (
+                                    select top 1 Contact_Info 
+                                    from Contact_Information 
+                                    where PersonId = p.Id and Contact_Type = 1
+                                ) as [Email]
                             from Employee e
                             inner join Person p on p.Id = e.Id
                             inner join StAddress stadd on stadd.Id = p.Primary_ResidenceId
-            ").AsNoTracking().ToListAsync();
+                        ").AsNoTracking().ToListAsync();
+
 
             return View(employees);
         }
