@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Assignment2.Models;
 using System.Threading.Tasks;
 using System.Linq;
+using Assignment2.Services;
 
 namespace Assignment2.Controllers
 {
@@ -13,6 +14,14 @@ namespace Assignment2.Controllers
         public LeaveRequestsController(Context context)
         {
             _context = context;
+        }
+
+        private readonly EmailService _emailService;
+
+        public LeaveRequestsController(Context context, EmailService emailService)
+        {
+            _context = context;
+            _emailService = emailService;
         }
 
         // GET: LeaveRequests
@@ -30,12 +39,18 @@ namespace Assignment2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveLeave(int id, string type)
         {
+            string leaveType = type == "sick" ? "Sick Leave" : type == "vacation" ? "Vacation Leave" : null;
+            if (leaveType == null) return BadRequest("Invalid leave type.");
+
+            int? employeeId = null;
+
             if (type == "sick")
             {
                 var leave = await _context.Employee_Sick_Leaves.FindAsync(id);
                 if (leave == null) return NotFound();
                 leave.Status = "Approved";
                 _context.Update(leave);
+                employeeId = leave.EmployeeId;
             }
             else if (type == "vacation")
             {
@@ -43,14 +58,34 @@ namespace Assignment2.Controllers
                 if (leave == null) return NotFound();
                 leave.Status = "Approved";
                 _context.Update(leave);
+                employeeId = leave.EmployeeId;
             }
-            else
+
+            // Fetch employee's email
+            if (employeeId.HasValue)
             {
-                return BadRequest("Invalid leave type.");
+                var employee = await _context.Employees
+                .Include(e => e.Contact_Information)
+                .FirstOrDefaultAsync(e => e.Id == employeeId.Value);
+
+                var email = employee?.Contact_Information?
+                    .FirstOrDefault(c => c.Contact_Type == Contact_Information.CONTACT_TYPE.EMAIL)
+                    ?.Contact_Info;
+
+                if (!string.IsNullOrWhiteSpace(email))
+                {
+                    await _emailService.SendEmailAsync(
+                        email,
+                        $"{leaveType} Approved",
+                        $"Hello,\n\nYour {leaveType} request (ID: {id}) has been approved.\n\nThank you."
+                    );
+                }
             }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         // POST: LeaveRequests/DeclineLeave
         [HttpPost]
