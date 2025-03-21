@@ -1,0 +1,29 @@
+﻿@model Assignment2.Models.Shift_Schedule
+
+@{
+    ViewData["Title"] = "Edit Employee Shift";
+}
+
+<h1>Edit Employee Shift</h1>
+<form asp-action="EditShift">
+    <input type="hidden" asp-for="EmployeeId" />
+    <div class="form-group">
+        <label asp-for="SupervisorId" class="control-label"></label>
+        <input asp-for="SupervisorId" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Start_Datetime" class="control-label"></label>
+        <input asp-for="Start_Datetime" class="form-control" type="datetime-local" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Hours_Scheduled" class="control-label"></label>
+        <input asp-for="Hours_Scheduled" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Comments" class="control-label"></label>
+        <textarea asp-for="Comments" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+

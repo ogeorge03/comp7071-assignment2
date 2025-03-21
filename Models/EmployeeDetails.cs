@@ -18,5 +18,7 @@
         public DateTime EmploymentStartDate { get; set; }
         public DateTime? EmploymentTerminationDate { get; set; }
         public decimal PayRateAmount { get; set; }
+
+        public string Email { get; set; } = string.Empty;
     }
 }

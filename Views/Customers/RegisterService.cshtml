@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Assignment2.Models.CustomerServiceDetails>
+
+
+@{
+    ViewData["Title"] = "Payroll";
+}
+
+<h1>Customer Services</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Description
+            </th>
+            <th>
+                Hourly Rate
+            </th>
+            <th>
+                Certification Authority
+            </th>
+            <th>
+                Certification Description
+            </th>
+            <th>
+                Certification Number
+            </th>
+            <th>
+                Date
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hourly_Rate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Certification_Authority)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Certification_Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Certification_Number)
+                </td>
+                <td>
+                    <input type="datetime-local" id="scheduledDate_@item.Id" name="scheduledDate_@item.Id" />
+                </td>
+                <td>
+                    <a href="#" class="schedule-link" data-id="@item.Id" data-customer-id="@ViewData["CustomerId"]">Schedule Service</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".schedule-link").forEach(link => {
+            link.addEventListener("click", function (event) {
+                event.preventDefault(); // Prevent default link behavior
+
+                let itemId = this.getAttribute("data-id");
+                let customerId = this.getAttribute("data-customer-id");
+                let dateTimeInput = document.getElementById(`scheduledDate_${itemId}`);
+                let scheduledDate = dateTimeInput.value;
+
+                if (!scheduledDate) {
+                    alert("Please select a date and time before scheduling.");
+                    return;
+                }
+
+                // Redirect to the ScheduleService action with the selected date
+                let url = `/Customers/ScheduleService?id=${itemId}&customerId=${customerId}&scheduledDate=${encodeURIComponent(scheduledDate)}`;
+                window.location.href = url;
+            });
+        });
+    });
+</script>

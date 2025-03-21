@@ -135,9 +135,13 @@ namespace Assignment2
         public DbSet<Certification> Certifications { get; set; } = null!;
         public DbSet<Contact_Information> Contact_Informations { get; set; } = null!;
         public DbSet<Customer> Customers { get; set; } = null!;
+        public DbSet<CustomerDetails> CustomersDetails { get; set; } = null!; // DTO for raw SQL Queries
         public DbSet<Customer_Invoice> Customer_Invoices { get; set; } = null!;
+        public DbSet<CustomerInvoiceDetails> CustomerInvoiceDetails { get; set; } = null!; // DTO for raw SQL queries
         public DbSet<Customer_Service> Customer_Services { get; set; } = null!;
+        public DbSet<CustomerServiceDetails> CustomerServiceDetails { get; set; } = null!; // DTO for raw SQL queries
         public DbSet<Customer_Service_Scheduled> Customer_Service_Scheduleds { get; set; } = null!;
+        public DbSet<CustomerServiceScheduleDetails> CustomerServiceScheduleDetails { get; set; } = null!; // DTO for raw SQL Queries
         public DbSet<Employee> Employees { get; set; } = null!;
         public DbSet<EmployeeDetails> EmployeesDetails { get; set; } // DTO for raw SQL queries
         public DbSet<Employee_Certification> Employee_Certifications { get; set; } = null!;
@@ -154,7 +158,8 @@ namespace Assignment2
         public DbSet<ShiftScheduleDetails> ShiftScheduleDetails { get; set; } = null!; // DTO for raw SQL queries
         public DbSet<StAddress> StAddresses { get; set; } = null!;
         public DbSet<Stat_Holidays> Stat_Holidays { get; set; } = null!;
-
+        public DbSet<ServiceAppointment> ServiceAppointments { get; set; } = null!;
+        public DbSet<ServiceInvoice> ServiceInvoices { get; set; } = null!;
 
 
         public IConfiguration _config { get; set; }

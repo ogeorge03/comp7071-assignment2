@@ -14,5 +14,7 @@ namespace Assignment2.Models
 
         public StAddress? Primary_Residence { get; set; }
 
+        public ICollection<Contact_Information> Contact_Information { get; set; }
+
     }
 }
