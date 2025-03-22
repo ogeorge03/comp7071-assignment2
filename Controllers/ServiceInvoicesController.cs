@@ -224,7 +224,9 @@ namespace Assignment2.Controllers
         // GET: ServiceInvoices/RevenueTrends
         public async Task<IActionResult> RevenueTrends()
         {
-            var revenueData = await _context.ServiceInvoices
+            var serviceInvoices = await _context.ServiceInvoices.ToListAsync();
+
+            var revenueData = serviceInvoices
                 .GroupBy(i => new { i.InvoiceDate.Year, i.InvoiceDate.Month })
                 .Select(g => new RevenueTrendViewModel
                 {
@@ -232,9 +234,11 @@ namespace Assignment2.Controllers
                     TotalRevenue = g.Sum(i => i.Amount)
                 })
                 .OrderBy(rt => rt.Period)
-                .ToListAsync();
+                .ToList();
 
             return View(revenueData);
         }
+
+
     }
 }
