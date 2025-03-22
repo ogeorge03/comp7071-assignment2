@@ -1,0 +1,28 @@
+﻿@model List<Assignment2.Models.Employee>
+
+@{
+    ViewData["Title"] = "Available Employees for Shift";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Job Title</th>
+            <th>Years of Service</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in Model)
+        {
+            var years = (int)((DateTime.Now - emp.Employment_Start_Date).TotalDays / 365.25);
+            <tr>
+                <td>@emp.First_Name @emp.Last_Name</td>
+                <td>@emp.Job_Title</td>
+                <td>@years</td>
+            </tr>
+        }
+    </tbody>
+</table>

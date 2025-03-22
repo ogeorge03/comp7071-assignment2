@@ -27,9 +27,16 @@
                 <td>@item.Hours_Scheduled</td>
                 <td>@item.Hours_Completed</td>
                 <td>@item.Supervisor</td>
+
                 <td>
                     <a asp-action="EditShift" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                    <a asp-controller="Shift"
+                       asp-action="AvailableEmployeesForShift"
+                       asp-route-shiftStart="@item.Start_Datetime"
+                       class="btn btn-info mt-1">
+                        View Available Employees
+                    </a>
                 </td>
             </tr>
         }

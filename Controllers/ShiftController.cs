@@ -104,5 +104,38 @@ namespace Assignment2.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult AvailableEmployeesForShift(DateTime shiftStart)
+        {
+            var shift = _context.Shift_Schedules.FirstOrDefault(s => s.Start_Datetime == shiftStart);
+            if (shift == null)
+                return NotFound();
+
+            var assignedIds = _context.Shift_Schedules
+                .Where(s => s.Start_Datetime == shiftStart)
+                .Select(s => s.EmployeeId)
+                .ToList();
+
+            var availableEmployees = _context.Employees
+                .Where(e =>
+                    !_context.Employee_Sick_Leaves.Any(l => l.EmployeeId == e.Id &&
+                        l.Sick_Day.Date == shiftStart.Date) &&
+                    !_context.Employee_Vacations.Any(v => v.EmployeeId == e.Id &&
+                        shiftStart.Date >= v.Vacation_Start_Date.Date && shiftStart.Date <= v.Vacation_End_Date.Date) &&
+                    !assignedIds.Contains(e.Id)
+                )
+                .ToList();
+
+            var sorted = availableEmployees
+                .OrderByDescending(e => (DateTime.Now - e.Employment_Start_Date).TotalDays)
+                .ToList();
+
+            return View(sorted);
+        }
+
+
+
+
+
     }
 }
