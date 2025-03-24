@@ -1,39 +1,40 @@
 ﻿@model Assignment2.Models.ShiftScheduleDetails;
 
 @{
-    ViewData["Title"] = "EditShift";
+    ViewData["Title"] = "DeleteShift";
+    var odt = ViewData["old_start_datetime"];
 }
 
-<h1>Edit</h1>
+<h1>Delete</h1>
 
-<h4>Edit Schedule</h4>
+<h4>Delete Shift at @odt?</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditShift" method="post">
-            <input type="hidden" class="form-control" name="old_start_datetime" value="@Model.Start_Datetime" />  
+        <form asp-action="DeleteShift" method="post">
             <div class="form-group">
                 <label asp-for="Start_Datetime" class="control-label"></label>
-                <input asp-for="Start_Datetime" class="form-control" />
+                <input type="hidden" name="Start_Datetime" class="form-control" value="@odt" />
+                <input name="Start_Datetime" class="form-control" value="@odt" disabled>
                 <span asp-validation-for="Start_Datetime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Hours_Scheduled" class="control-label"></label>
-                <input asp-for="Hours_Scheduled" class="form-control" />
+                <input asp-for="Hours_Scheduled" class="form-control" disabled />
                 <span asp-validation-for="Hours_Scheduled" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Hours_Completed" class="control-label"></label>
-                <input asp-for="Hours_Completed" class="form-control" />
+                <input asp-for="Hours_Completed" class="form-control" disabled />
                 <span asp-validation-for="Hours_Completed" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Comments" class="control-label"></label>
-                <input asp-for="Comments" class="form-control" />
+                <input asp-for="Comments" class="form-control" disabled />
                 <span asp-validation-for="Comments" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Delete" class="btn btn-danger" />
             </div>
         </form>
     </div>

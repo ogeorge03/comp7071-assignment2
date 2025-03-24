@@ -16,10 +16,12 @@ namespace Assignment2.Controllers
 {
     public class EmployeesController : Controller
     {
+        private readonly ILogger<EmployeesController> _logger;
         private readonly Context _context;
 
-        public EmployeesController(Context context)
+        public EmployeesController(ILogger<EmployeesController> logger, Context context)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -91,7 +93,7 @@ namespace Assignment2.Controllers
             return View(employee);
         }
 
-        public async Task<IActionResult> Shifts(int? id, int? sid) {
+        public async Task<IActionResult> Shifts(int? id) {
             if (id == null)
             {
                 return NotFound();
@@ -108,8 +110,6 @@ namespace Assignment2.Controllers
                         from Shift_Schedule
                         where EmployeeId = {0}
             ", id).ToListAsync();
-
-            var ss = await _context.Shift_Schedules.FirstOrDefaultAsync(s => s.EmployeeId == id);
 
             ViewData["id"] = id;
 
@@ -146,8 +146,11 @@ namespace Assignment2.Controllers
             return View();
         }
 
-        public async Task<IActionResult> EditShift(int? id)
+        [HttpGet]
+        public async Task<IActionResult> EditShift(int? id, ShiftScheduleDetails viewModel)
         {
+            var start_datetime = viewModel.Start_Datetime;
+
             var shifts = await _context.ShiftScheduleDetails.FromSqlRaw(@"
                         select 
                         0 as id
@@ -158,8 +161,13 @@ namespace Assignment2.Controllers
                         , (select First_Name + ' ' + Last_Name from Person where Id = SupervisorId) as [Supervisor]
                         from Shift_Schedule
                         where EmployeeId = {0}
-                        and Start_Datetime = (select Start_Datetime from Shift_Schedule)
-            ", id).SingleOrDefaultAsync();
+                        and Start_Datetime = {1}
+            ", id, start_datetime).SingleOrDefaultAsync();
+
+            var shift = await _context.Shift_Schedules.SingleOrDefaultAsync(s => s.EmployeeId == id && s.Start_Datetime == start_datetime);
+
+            _logger.LogInformation("Received data for editing shift - EmployeeId: {EmployeeId} & Start_Datetime: {start_dateTime} & shift {shift.Start_Date}",
+                id, start_datetime, shift?.Start_Datetime);
 
             if (shifts == null)
             {
@@ -171,22 +179,38 @@ namespace Assignment2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditShift(int id, ShiftScheduleDetails viewModel)
+        public async Task<IActionResult> EditShift(int id, DateTime old_start_datetime, DateTime start_datetime, ShiftScheduleDetails viewModel)
         {
+            var shift = await _context.Shift_Schedules.FirstOrDefaultAsync(s => s.EmployeeId == id);
 
-            var shift = await _context.Shift_Schedules.SingleOrDefaultAsync(s => s.EmployeeId == id);
+            Shift_Schedule ss = new Shift_Schedule();
+            ss.Start_Datetime = start_datetime;
+            ss.Hours_Scheduled = viewModel.Hours_Scheduled;
+            ss.Hours_Completed = viewModel.Hours_Scheduled;
+            ss.Comments = viewModel?.Comments;
+
+            _logger.LogInformation("Received data for editing shift - EmployeeId: {EmployeeId}, Start_Datetime: {old_start_datetime}",
+                id, old_start_datetime);
 
             if (ModelState.IsValid)
             {
-                string sql = "UPDATE Shift_Schedule SET " +
-                    "Start_Datetime = {0}, " +
-                    "Hours_Scheduled = {1}, " +
-                    "Hours_Completed = {2}, " +
-                    "Comments = {3} " +
-                    "WHERE EmployeeId = {4} ";
+                string sql = @"
+                    UPDATE Shift_Schedule
+                    SET Start_Datetime = {0}, 
+                        Hours_Scheduled = {1}, 
+                        Hours_Completed = {2}, 
+                        Comments = {3}
+                    WHERE EmployeeId = {4} 
+                    AND Start_Datetime = {5}";
 
-                int rowsAffected = _context.Database.ExecuteSqlRaw(sql, viewModel.Start_Datetime,
-                    viewModel.Hours_Scheduled, viewModel.Hours_Completed, viewModel.Comments, id);
+                int rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql,
+                    ss.Start_Datetime,
+                    ss.Hours_Scheduled,
+                    ss?.Hours_Completed,
+                    ss?.Comments,
+                    id,
+                    old_start_datetime
+                );
 
                 await _context.SaveChangesAsync();
             }
@@ -200,7 +224,7 @@ namespace Assignment2.Controllers
             {
                 try
                 {
-                    //_context.Update(viewModel);
+                    _context.Update(viewModel);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -216,6 +240,69 @@ namespace Assignment2.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteShift(int? id, ShiftScheduleDetails viewModel)
+        {
+            var start_datetime = viewModel.Start_Datetime;
+
+            var shifts = await _context.ShiftScheduleDetails.FromSqlRaw(@"
+                        select 
+                        0 as id
+                        ,Start_Datetime
+                        ,Hours_Scheduled
+                        ,Hours_Completed
+                        ,Comments
+                        , (select First_Name + ' ' + Last_Name from Person where Id = SupervisorId) as [Supervisor]
+                        from Shift_Schedule
+                        where EmployeeId = {0}
+                        and Start_Datetime = {1}
+            ", id, start_datetime).SingleOrDefaultAsync();
+
+            var shift = await _context.Shift_Schedules.SingleOrDefaultAsync(s => s.EmployeeId == id && s.Start_Datetime == start_datetime);
+
+            _logger.LogInformation("Deleting shift - EmployeeId: {EmployeeId}, Start_Datetime: {start_datetime}, shift: {shift?.Start_Datetime}",
+                id, start_datetime, shift?.Start_Datetime);
+
+            ViewData["old_start_datetime"] = start_datetime;
+
+            if (shifts == null)
+            {
+                return NotFound();
+            }
+
+            return View(shifts);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteShift(int id, DateTime Start_Datetime, ShiftScheduleDetails viewModel)
+        {
+            var shift = await _context.Shift_Schedules.FirstOrDefaultAsync(s => s.EmployeeId == id);
+
+            Shift_Schedule ss = new Shift_Schedule();
+            ss.Start_Datetime = Start_Datetime;
+            ss.Hours_Scheduled = viewModel.Hours_Scheduled;
+            ss.Hours_Completed = viewModel.Hours_Scheduled;
+            ss.Comments = viewModel?.Comments;
+
+            _logger.LogInformation("Deleting shift - EmployeeId: {EmployeeId}, Start_Datetime: {Start_Datetime}",
+                id, ss.Start_Datetime);
+
+            if (ModelState.IsValid)
+            {
+                string sql = @"
+                    DELETE FROM Shift_Schedule
+                    WHERE EmployeeId = {0} 
+                    AND Start_Datetime = {1}";
+
+                int rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, id, ss.Start_Datetime);
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Payroll(int? id) {

@@ -51,7 +51,8 @@
                         @Html.DisplayFor(modelItem => item.Supervisor)
                 </td>
                 <td>
-                    <a href="@Url.Action("EditShift", new { id = @id })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("EditShift", new { id = @id, start_datetime = @item.Start_Datetime })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("DeleteShift", new { id = @id, start_datetime = @item.Start_Datetime })" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }
