@@ -35,7 +35,7 @@
 
 <h2>Employee Vacations</h2>
 <p>
-    <a href="@Url.Action("CreateVacation", new { id = ViewData["id"] })" class="btn btn-primary">Create Vacation</a>
+    <a href="@Url.Action("CreateVacation", new { id = ViewData["id"], supervisorid = ViewData["supervisorid"] })" class="btn btn-primary">Create Vacation</a>
 </p>
 <table class="table">
     <thead>
@@ -111,7 +111,8 @@
                     @sickDay.Doctors_Note
                 </td>
                 <td>
-                    <a href="@Url.Action("EditSickLeave", new { id = @sickDay.EmployeeId })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("EditSickLeave", new { id = @sickDay.EmployeeId, sick_day = @sickDay.Sick_Day })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("DeleteSickLeave", new { id = @sickDay.EmployeeId, sick_day = @sickDay.Sick_Day })" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

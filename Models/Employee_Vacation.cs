@@ -9,6 +9,7 @@
         public DateTime Vacation_End_Date { get; set; }
         public bool Is_SuperVisor_Approved { get; set; }
         public Employee Supervisor { get; set; }
+        public int? SupervisorId { get; set; }
         public DateTime? Approval_Date { get; set; }
         public bool Is_Paid_Vacation { get; set; }
 

@@ -11,6 +11,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="EditSickLeave">
+            <input type="hidden" class="form-control" name="old_sick_day" value="@Model.Sick_Day" />
             <div class="form-group">
                 <input asp-for="EmployeeId" class="form-control" type="hidden" />
             </div>

@@ -2,8 +2,8 @@
 
 @{
     ViewData["Title"] = "CreateVacation";
-    var eid = ViewData["eid"];
-    var sid = ViewData["sid"];
+    var supervisorid = ViewData["supervisorid"] as int?;
+    var id = ViewData["id"] as int?;
 }
 
 <h1>Create</h1>
@@ -12,9 +12,14 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditVacation" method="post">
-            <input  asp-for="EmployeeId" value="@eid" />
-            <input  asp-for="Supervisor" value="@sid" />
+        <form asp-action="CreateVacation" method="post">
+            <input name="id" type="hidden" value="@id" />
+            <input name="supervisorid" type="hidden" value="@supervisorid" />
+            <div class="form-group">
+                <label asp-for="SupervisorId" class="control-label"></label>
+                <input asp-for="SupervisorId" class="form-control" value="@supervisorid" disabled/>
+                <span asp-validation-for="SupervisorId" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Vacation_Start_Date" class="control-label"></label>
                 <input asp-for="Vacation_Start_Date" class="form-control" />

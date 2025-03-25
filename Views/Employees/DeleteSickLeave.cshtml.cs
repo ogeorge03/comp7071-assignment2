@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Assignment2.Views.Employees.SickLeave
 {
-    public class EditSickLeaveModel : PageModel
+    public class DeleteSickLeaveModel : PageModel
     {
         public void OnGet()
         {

@@ -1,36 +1,39 @@
 ﻿@model Assignment2.Models.Employee_Sick_Leave;
 
 @{
-    ViewData["Title"] = "CreateSickLeave";
+    ViewData["Title"] = "DeleteSickLeave";
 }
 
-<h1>Create</h1>
+<h1>Delete</h1>
 
-<h4>Sick Leaves</h4>
+<h4>Delete sick leave on @Model.Sick_Day?</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateSickLeave">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="DeleteSickLeave" method="post">
+            <div class="form-group">
+                <input asp-for="EmployeeId" class="form-control" type="hidden" />
+            </div>
             <div class="form-group">
                 <label asp-for="Sick_Day" class="control-label"></label>
-                <input asp-for="Sick_Day" class="form-control" />
+                <input type="hidden" name="Sick_Day" class="form-control" value="@Model.Sick_Day" />
+                <input name="Sick_Day" class="form-control" value="@Model.Sick_Day" disabled/>
                 <span asp-validation-for="Sick_Day" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Doctors_Note" class="control-label"></label>
-                <input asp-for="Doctors_Note" class="form-control" />
+                <input asp-for="Doctors_Note" class="form-control" disabled/>
                 <span asp-validation-for="Doctors_Note" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Delete" class="btn btn-danger" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="">Back to List</a>
 </div>
 
 @section Scripts {

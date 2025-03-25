@@ -7,13 +7,12 @@ namespace Assignment2.Models
     {
         public int Id { get; set; }
         public Employee? Supervisor { get; set; }
+        public int SupervisorId { get; set; }
         public Org Employer { get; set; }
         public Person? Emergency_Contact { get; set; }
         public string Job_Title { get; set; }
         public enum EMPLOYMENT_TYPE { FULL_TIME=0, PART_TIME, ON_CALL }
-
         public enum SALARY_HOURLY { SALARY=0, HOURLY}
-
         public decimal Pay_Rate_Amount {  get; set; }
 
         public enum PAY_RATE_FREQUENCY { MONTHLY=0, WEEKLY=1, BI_WEEKLY=2 }
