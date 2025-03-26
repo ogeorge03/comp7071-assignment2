@@ -555,15 +555,8 @@ namespace Assignment2.Controllers
             return View();
         }
 
-
-
         public async Task<IActionResult> CreateVacation(int? id, int supervisorid, Employee_Vacation createModel)
         {
-            // var supervisor = await _context.Employees.FirstOrDefaultAsync(e => e.Id == supervisorid);
-
-            _logger.LogInformation("Create vacation - EmployeeId: {id}, Supervisor: {supervisor}",
-                id, supervisorid);
-
             if (id == null)
             {
                 return NotFound();
