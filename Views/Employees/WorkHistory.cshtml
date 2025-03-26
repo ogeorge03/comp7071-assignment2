@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "Work History";
+}
+
+<h1>Work History</h1>
+
+<h2>Statutory Holidays</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Holiday
+            </th>
+            <th>
+                Date
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var holiday in (List<Stat_Holidays>)ViewData["statHolidays"])
+        {
+            <tr>
+                <td>
+                    @holiday.Holiday
+                </td>
+                <td>
+                    @holiday.DateTime.ToString("yyyy-MM-dd")
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Employee Vacations</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Vacation Start Date
+            </th>
+            <th>
+                Vacation End Date
+            </th>
+            <th>
+               Supervisor Approved
+            </th>
+            <th>
+                Approved Date
+            </th>
+            <th>
+                Paid Vacation
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var holiday in (List<Employee_Vacation>)ViewData["vacations"])
+        {
+            <tr>
+                <td>
+                    @holiday.Vacation_Start_Date.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    @holiday.Vacation_End_Date.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    @(holiday.Is_SuperVisor_Approved ? "Yes" : "No")
+                </td>
+                <td>
+                    @holiday.Approval_Date?.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    @(holiday.Is_Paid_Vacation ? "Yes" : "No")
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Employee Sick Leaves</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Sick Day
+            </th>
+            <th>
+                Doctor's Note
+            </th>
+            <th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var sickDay in (List<Employee_Sick_Leave>)ViewData["sickLeave"])
+        {
+            <tr>
+                <td>
+                    @sickDay.Sick_Day.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    @sickDay.Doctors_Note
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

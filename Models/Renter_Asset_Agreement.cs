@@ -1,4 +1,4 @@
-﻿namespace MVCSampleApp.Models
+﻿namespace Assignment2.Models
 {
     public class Renter_Asset_Agreement
     {
@@ -10,6 +10,5 @@
         public enum RENTAL_TYPE { MONTHLY = 0, PREPAID = 1, ANNUAL = 2 }
         public DateTime? Agreement_Expiration_Date { get; set; }
         public string? Notes {  get; set; }
-
     }
 }
