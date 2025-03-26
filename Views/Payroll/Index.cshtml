@@ -1,38 +1,38 @@
 ﻿@model IEnumerable<Assignment2.Models.Payroll>
 
-
 @{
-    ViewData["Title"] = "Payroll";
+    ViewData["Title"] = "Index";
 }
 
-<h1>Payroll</h1>
+<h1>Payroll Index</h1>
 
 <table class="table">
+    <a asp-action="Create" asp-route-id="@ViewData["employeeid"]" class="btn btn-primary">Create new payroll</a>
     <thead>
         <tr>
             <th>
                 Processed Datetime
             </th>
             <th>
-               Regular Pay
+                Regular Pay
             </th>
             <th>
-               Overtime Pay
+                Overtime Pay
             </th>
             <th>
-               Vacation Pay
+                Vacation Pay
             </th>
             <th>
-               Tax
+                Tax
             </th>
             <th>
                 Payroll Adjustment
             </th>
             <th>
-               Adjustment Reason
+                Adjustment Reason
             </th>
             <th>
-               Start Date
+                Start Date
             </th>
             <th>
                 End Date
@@ -82,11 +82,11 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Check_Number)
                 </td>
-
             </tr>
+            
         }
     </tbody>
 </table>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-controller="Employees" class="btn btn-secondary">Back to list</a>
 </div>

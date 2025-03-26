@@ -43,6 +43,11 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Payroll}/{id?}")
+    .WithStaticAssets();
+
 app.MapControllers();
 
 app.Run();

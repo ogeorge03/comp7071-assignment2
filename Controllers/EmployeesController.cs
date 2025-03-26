@@ -115,15 +115,7 @@ namespace Assignment2.Controllers
                 return NotFound();
             }
 
-            var payroll = await _context.Payrolls.FromSqlRaw(@"
-                        select 
-                        *      
-                        from Payroll
-                        where EmployeeId = {0}
-            ", id).AsNoTracking().ToListAsync();
-
-
-            return View(payroll);
+            return RedirectToAction("Index", "PayrollsController");
         }
 
         public async Task<IActionResult> WorkHistory(int? id) {

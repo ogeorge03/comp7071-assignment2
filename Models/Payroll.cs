@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public Employee Employee { get; set; }
+        public int EmployeeId { get; set;  }
         public DateTime? Processed_Datetime { get; set; }
         public decimal Regular_Pay { get; set; }
         public decimal Overtime_Pay { get; set; }
