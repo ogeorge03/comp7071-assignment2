@@ -22,6 +22,10 @@ namespace Assignment2.Controllers
                 .Include(sa => sa.Customer)
                 .Include(sa => sa.Service)
                 .ToListAsync();
+
+            var invoices = await _context.ServiceInvoices.ToListAsync();
+            ViewBag.CompletedAppointmentIds = invoices.Select(i => i.ServiceAppointmentId).ToHashSet();
+
             return View(appointments);
         }
 

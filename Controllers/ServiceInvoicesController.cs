@@ -52,9 +52,15 @@ namespace Assignment2.Controllers
         }
 
         // GET: ServiceInvoices/Create
-        public IActionResult Create()
+        public IActionResult Create(int? appointmentId)
         {
             ViewData["ServiceAppointmentId"] = new SelectList(_context.ServiceAppointments, "Id", "Id");
+
+            if (appointmentId.HasValue)
+            {
+                ViewData["PreSelectedAppointmentId"] = appointmentId.Value;
+            }
+
             return View();
         }
 
