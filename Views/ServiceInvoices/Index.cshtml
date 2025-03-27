@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Assignment2.Models.ServiceInvoice>
+
+@{
+    ViewData["Title"] = "Service Invoices";
+}
+
+<h1>Service Invoices</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Invoice</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Service Appointment</th>
+            <th>Amount</th>
+            <th>Invoice Date</th>
+            <th>Payment Due Date</th>
+            <th>Is Paid</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ServiceAppointment.Id</td>
+                <td>@item.Amount</td>
+                <td>@item.InvoiceDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.PaymentDueDate?.ToString("yyyy-MM-dd")</td>
+                <td>@item.IsPaid</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
