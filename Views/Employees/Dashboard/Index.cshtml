@@ -1,0 +1,34 @@
+﻿@model Assignment2.Models.DashboardViewModel
+
+<h2>My Assigned Scheduled Services</h2>
+
+@if (Model.AssignedScheduledServices.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Service</th>
+                <th>Customer</th>
+                <th>Facility</th>
+                <th>Scheduled Date</th>
+                <th>Fee</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var service in Model.AssignedScheduledServices)
+            {
+                <tr>
+                    <td>@service.Customer_Service?.ToString()</td>
+                    <td>@service.Customer?.ToString()</td>
+                    <td>@service.Facility?.ToString()</td>
+                    <td>@service.Scheduled_DateTime.ToString("g")</td>
+                    <td>@(service.Service_Fee ?? 0):C</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>You have no assigned services.</p>
+}
