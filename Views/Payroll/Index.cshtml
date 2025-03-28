@@ -82,8 +82,13 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Check_Number)
                 </td>
-            </tr>
-            
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" asp-route-employeeid="@ViewData["employeeid"]" class="btn btn-primary">Edit</a>
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id" asp-route-employeeid="@ViewData["employeeid"]" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>    
         }
     </tbody>
 </table>

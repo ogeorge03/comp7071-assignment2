@@ -80,40 +80,69 @@ namespace Assignment2.Controllers
             _context.Payrolls.Add(payroll);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Payroll", new { id = id });
-            
-            //return View(payroll);
         }
 
         // GET: Payroll/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? employeeid, int? id, Payroll payroll)
         {
-            if (id == null)
+            if (employeeid == null)
             {
                 return NotFound();
             }
 
-            var payroll = await _context.Payrolls.FirstOrDefaultAsync(p => p.EmployeeId == id);
+            var pr = await _context.Payrolls
+                .Where(p => p.EmployeeId == employeeid && p.Id == id)
+                .SingleOrDefaultAsync();
 
-            return View(payroll);
+            ViewData["employeeid"] = employeeid;
+            ViewData["payrollid"] = id;
+
+            return View(pr);
         }
 
         // POST: Payroll/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Employee,Processed_Datetime,Regular_Pay,Overtime_Pay,Vacation_Pay,Tax_Withheld,Payroll_Adjustment,Adjustment_Reason,Pay_Period_Start_Date,Pay_Period_End_Date,Direct_Deposit_Number,Check_Number")] Payroll payroll)
+        public async Task<IActionResult> Edit(int? employeeid, int id, Payroll payroll)
         {
             if (id != payroll.Id)
             {
                 return NotFound();
             }
 
+            var pr = await _context.Payrolls
+                .FirstOrDefaultAsync(p => p.EmployeeId == employeeid && p.Id == id);
+
+            _logger.LogInformation("Edit payroll - EmployeeId: {employeeid}, PayrollId: {payrollid}, Id: {Id}",
+                employeeid, id, payroll.Id);
+
+            if (pr != null)
+            {
+                pr.EmployeeId = (int)employeeid;
+                pr.Processed_Datetime = payroll?.Processed_Datetime;
+                pr.Regular_Pay = payroll.Regular_Pay;
+                pr.Overtime_Pay = payroll.Overtime_Pay;
+                pr.Vacation_Pay = payroll.Vacation_Pay;
+                pr.Tax_Withheld = payroll.Tax_Withheld;
+                pr.Payroll_Adjustment = payroll.Payroll_Adjustment;
+                pr.Adjustment_Reason = payroll.Adjustment_Reason;
+                pr.Pay_Period_Start_Date = payroll.Pay_Period_Start_Date;
+                pr.Pay_Period_End_Date = payroll.Pay_Period_End_Date;
+                pr.Direct_Deposit_Number = payroll.Direct_Deposit_Number;
+                pr.Check_Number = payroll.Check_Number;
+                
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Payroll", new { id = employeeid });
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(payroll);
-                    await _context.SaveChangesAsync();
+                    //_context.Update(viewModel);
                 }
+
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!PayrollExists(payroll.Id))
@@ -127,37 +156,70 @@ namespace Assignment2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(payroll);
+            return RedirectToAction("Index", "Payroll", new { id = employeeid });
         }
 
         // GET: Payroll/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? employeeid, int? id, Payroll payroll)
         {
-            if (id == null)
+        
+            if (employeeid == null)
             {
                 return NotFound();
             }
 
-            var payroll = await _context.Payrolls
-                .Include(p => p.Employee)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (payroll == null)
-            {
-                return NotFound();
-            }
+            var pr = await _context.Payrolls
+                .Where(p => p.EmployeeId == employeeid && p.Id == id)
+                .SingleOrDefaultAsync();
 
-            return View(payroll);
+            ViewData["employeeid"] = employeeid;
+            ViewData["payrollid"] = id;
+
+            return View(pr);
         }
 
         // POST: Payroll/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int? employeeid, int id, Payroll payroll)
         {
-            var payroll = await _context.Payrolls.FindAsync(id);
-            _context.Payrolls.Remove(payroll);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (id != payroll.Id)
+            {
+                return NotFound();
+            }
+
+            var pr = await _context.Payrolls
+                .FirstOrDefaultAsync(p => p.EmployeeId == employeeid && p.Id == id);
+
+            if (pr != null)
+            {
+                _context.Payrolls.Remove(pr);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Payroll", new { id = employeeid });
+            }
+            
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //_context.Update(viewModel);
+                }
+
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PayrollExists(payroll.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction("Index", "Payroll", new { id = employeeid });
         }
 
         private bool PayrollExists(int id)
