@@ -16,12 +16,10 @@ namespace Assignment2.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly ILogger<EmployeesController> _logger;
         private readonly Context _context;
 
-        public EmployeesController(ILogger<EmployeesController> logger, Context context)
+        public EmployeesController(Context context)
         {
-            _logger = logger;
             _context = context;
         }
 
@@ -280,9 +278,6 @@ namespace Assignment2.Controllers
             ss.Hours_Completed = viewModel.Hours_Scheduled;
             ss.Comments = viewModel?.Comments;
 
-            _logger.LogInformation("Deleting shift - EmployeeId: {EmployeeId}, Start_Datetime: {Start_Datetime}",
-                id, ss.Start_Datetime);
-
             if (ModelState.IsValid)
             {
                 string sql = @"
@@ -363,9 +358,6 @@ namespace Assignment2.Controllers
 
             ViewData["id"] = id;
             ViewData["supervisorid"] = supervisorid;
-
-            _logger.LogInformation("Create Vacation - EmployeeId: {EmployeeId}, SupervisorId: {supervisor}",
-                id, supervisorid);
 
             return View();
         }
@@ -508,11 +500,6 @@ namespace Assignment2.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            if (viewModel == null)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -546,9 +533,6 @@ namespace Assignment2.Controllers
             var vacation = _context.Employee_Vacations
                 .Where(v => v.EmployeeId == id);
 
-            _logger.LogInformation("Create vacation - EmployeeId: {id}, Supervisor: {supervisor}",
-                id, supervisorid);
-
             ViewData["supervisorid"] = supervisorid;
             ViewData["id"] = id;
 
@@ -561,9 +545,6 @@ namespace Assignment2.Controllers
             {
                 return NotFound();
             }
-
-            //createModel.SupervisorId = supervisorid;
-            // createModel.EmployeeId = id.Value;
 
             var supervisor = await _context.Employees.FirstOrDefaultAsync(e => e.Id == supervisorid);
 
@@ -589,30 +570,104 @@ namespace Assignment2.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditVacation(int? id, Employee_Vacation viewModel)
+        [HttpGet]
+        public async Task<IActionResult> EditVacation(int? id, int? employeeid)
         {
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vacation = await _context.Employee_Vacations.SingleOrDefaultAsync(v => v.EmployeeId == id);
+            var vacation = await _context.Employee_Vacations
+                .Where(ev => ev.Id == id && ev.EmployeeId == employeeid)
+                .SingleOrDefaultAsync();
+
+            return View(vacation);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditVacation(int? id, int? employeeid, Employee_Vacation viewModel)
+        {
+            if (employeeid == null)
+            {
+                return NotFound();
+            }
+
+            var vacation = await _context.Employee_Vacations
+                .SingleOrDefaultAsync(ev => ev.EmployeeId == employeeid && ev.Id == id);
 
             if (vacation != null)
             {
+                vacation.Id = (int)id;
+                vacation.EmployeeId = viewModel.EmployeeId;
                 vacation.Vacation_Start_Date = viewModel.Vacation_Start_Date;
                 vacation.Vacation_End_Date = viewModel.Vacation_End_Date;
                 vacation.Is_SuperVisor_Approved = viewModel.Is_SuperVisor_Approved;
                 vacation.Is_Paid_Vacation = viewModel.Is_Paid_Vacation;
                 vacation.Approval_Date = viewModel.Approval_Date;
+
                 await _context.SaveChangesAsync();
+                return RedirectToAction("WorkHistory", new { id = employeeid });
             }
 
-            if (viewModel == null)
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(viewModel);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmployeeExists(vacation.EmployeeId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(vacation);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteVacation(int? id, int? employeeid)
+        {
+
+            if (id == null)
             {
                 return NotFound();
+            }
+
+            var vacation = await _context.Employee_Vacations
+                .Where(ev => ev.Id == id && ev.EmployeeId == employeeid)
+                .SingleOrDefaultAsync();
+
+            return View(vacation);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteVacation(int? id, int? employeeid, Employee_Vacation viewModel)
+        {
+            if (employeeid == null)
+            {
+                return NotFound();
+            }
+
+            var vacation = await _context.Employee_Vacations
+                .SingleOrDefaultAsync(ev => ev.EmployeeId == employeeid && ev.Id == id);
+
+            if (vacation != null)
+            {
+                _context.Employee_Vacations.Remove(vacation);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("WorkHistory", new { id = employeeid });
             }
 
             if (ModelState.IsValid)

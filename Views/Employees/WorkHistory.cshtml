@@ -77,7 +77,10 @@
                     @(holiday.Is_Paid_Vacation ? "Yes" : "No")
                 </td>
                 <td>
-                    <a href="@Url.Action("EditVacation", new { id = @holiday.Id + 1 })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("EditVacation", new { employeeid = @holiday.EmployeeId, id = @holiday.Id} )" class="btn btn-primary">Edit</a>
+                </td>
+                <td>
+                    <a href="@Url.Action("DeleteVacation", new { employeeid = @holiday.EmployeeId, id = @holiday.Id} )" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

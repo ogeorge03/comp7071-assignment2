@@ -14,12 +14,8 @@
     <div class="col-md-4">
         <form asp-action="CreateVacation" method="post">
             <input name="id" type="hidden" value="@id" />
-            <input name="supervisorid" type="hidden" value="@supervisorid" />
-            <div class="form-group">
-                <label asp-for="SupervisorId" class="control-label"></label>
-                <input asp-for="SupervisorId" class="form-control" value="@supervisorid" disabled/>
-                <span asp-validation-for="SupervisorId" class="text-danger"></span>
-            </div>
+            <input name="supervisorid" asp-for="SupervisorId" type="hidden" value="@supervisorid" />
+            
             <div class="form-group">
                 <label asp-for="Vacation_Start_Date" class="control-label"></label>
                 <input asp-for="Vacation_Start_Date" class="form-control" />

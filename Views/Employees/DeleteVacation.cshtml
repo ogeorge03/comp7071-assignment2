@@ -1,31 +1,31 @@
 ﻿@model Assignment2.Models.Employee_Vacation;
 
 @{
-    ViewData["Title"] = "EditVacation";
+    ViewData["Title"] = "DeleteVacation";
 }
 
-<h1>Edit</h1>
+<h1>Delete</h1>
 
-<h4>Edit Vacation</h4>
+<h4>Delete Vacation</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditVacation" method="post">
+        <form asp-action="DeleteVacation" method="post">
             <input type="hidden" name="id" value="@Model.Id" />
             <input type="hidden" name="employeeid" value="@Model.EmployeeId" />
             <div class="form-group">
                 <label asp-for="Vacation_Start_Date" class="control-label"></label>
-                <input asp-for="Vacation_Start_Date" class="form-control" value="@Model.Vacation_Start_Date" />
+                <input asp-for="Vacation_Start_Date" class="form-control" value="@Model.Vacation_Start_Date" disabled />
                 <span asp-validation-for="Vacation_Start_Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Vacation_End_Date" class="control-label"></label>
-                <input asp-for="Vacation_End_Date" class="form-control" value="@Model.Vacation_End_Date" />
+                <input asp-for="Vacation_End_Date" class="form-control" value="@Model.Vacation_End_Date" disabled />
                 <span asp-validation-for="Vacation_Start_Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Is_SuperVisor_Approved" class="control-label"></label>
-                <select asp-for="Is_SuperVisor_Approved" class="form-control">
+                <select asp-for="Is_SuperVisor_Approved" class="form-control" disabled>
                     <option value="" disabled selected>Select an option</option>
                     <option value="true">Yes</option>
                     <option value="false">No</option>
@@ -35,7 +35,7 @@
 
             <div class="form-group">
                 <label asp-for="Is_Paid_Vacation" class="control-label"></label>
-                <select asp-for="Is_Paid_Vacation" class="form-control">
+                <select asp-for="Is_Paid_Vacation" class="form-control" disabled>
                     <option value="" disabled selected>Select an option</option>
                     <option value="true">Yes</option>
                     <option value="false">No</option>
@@ -44,13 +44,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Approval_Date" class="control-label"></label>
-                <input asp-for="Approval_Date" class="form-control" />
+                <input asp-for="Approval_Date" class="form-control" disabled />
                 <span asp-validation-for="Approval_Date" class="text-danger"></span>
 
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="WorkHistory" asp-route-id="@Model.EmployeeId" class="btn btn-secondary">Cancel</a>
+            </div>
         </form>
-
     </div>
+</div>
+<div>
+    <a asp-action="">Back to List</a>
 </div>
 
 @section Scripts {
